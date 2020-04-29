@@ -1,0 +1,11 @@
+﻿  YouTube-dl Front.cpp
+D:\Documents\Programming\YouTube-dll Front\YouTube-dl Front\YouTube-dl Front.cpp(1519,36): warning C4018: '<': signed/unsigned mismatch
+D:\Documents\Programming\YouTube-dll Front\YouTube-dl Front\YouTube-dl Front.cpp(1550,36): warning C4018: '<': signed/unsigned mismatch
+D:\Documents\Programming\YouTube-dll Front\YouTube-dl Front\YouTube-dl Front.cpp(1506,9): warning C4101: 'count': unreferenced local variable
+D:\Documents\Programming\YouTube-dll Front\YouTube-dl Front\YouTube-dl Front.cpp(1623,23): warning C4018: '<': signed/unsigned mismatch
+D:\Documents\Programming\YouTube-dll Front\YouTube-dl Front\YouTube-dl Front.cpp(1651,48): warning C4267: 'argument': conversion from 'size_t' to 'const _Elem', possible loss of data
+          with
+          [
+              _Elem=char
+          ]
+  YouTube-dl Front.vcxproj -> D:\Documents\Programming\YouTube-dll Front\YouTube-dl Front\Debug\YouTube-dl Front.exe
