@@ -27,6 +27,9 @@ bool CheckString(string arg);
 string ParseFilename(string filename);
 void EraseArgumentArg(string arg, string arg2, string description);
 void AddArgumentArgument(string arg, string arg2, string description);
+string OutputTemplate(string arg, string arg2, string description);
+string AddTemplateArgs(string argument, string arg3);
+string ParseTemplate(string out_template);
 
 string command = "\"C:\\Program Files\\YouTube-dl\\youtube-dl.exe\" ";
 string config;
@@ -368,7 +371,7 @@ string EditCommand(string temp_cmd)
         cout << "| 93. Add Prefer Insecure       |" << endl;
         cout << "| 94. Add Specify User Agent    |" << endl;
         cout << "| 95. Add Referer URL           |" << endl;
-        cout << "| 96. Add custom HTTP Header    |" << endl;
+        cout << "| 96. Add Custom HTTP Header    |" << endl;
         cout << "| 97. Add Bibi Workaround       |" << endl;
         cout << "| 98. Add Sleep Interval        |" << endl;
         cout << "| 99. Add Max Sleep Interval    |" << endl;
@@ -818,7 +821,7 @@ string EditCommand(string temp_cmd)
             string arg2 = "TEMPLATE";
             string description = "Output filename template, see the \"OUTPUT TEMPLATE\" for all the info";
 
-            AddArgumentArgument(arg, arg2, description);
+            OutputTemplate(arg, arg2, description);
         }
         if (input == "51")
         {
@@ -1592,7 +1595,11 @@ void EraseArgumentArg(string arg, string arg2, string description)
 void AddArgumentArgument(string arg, string arg2, string description)
 {
     string argumentArgument;
+    string notepad_cmd;
+    string out_template = "%(title)s-%(id)s.%(ext)s";
+    string input;
     bool boolean = false;
+    bool boolean2 = false;
 
     // Check if the argument is already part of the command string
     // If the arg is part of the command string, ask the user if they would like to remove it
@@ -1604,7 +1611,7 @@ void AddArgumentArgument(string arg, string arg2, string description)
     }
     else
     {
-        while (!boolean)
+        while (!boolean2)
         {
             cout << endl;
             cout << arg << " " << arg2 << endl;
@@ -1616,6 +1623,10 @@ void AddArgumentArgument(string arg, string arg2, string description)
             {
                 // Parse the filename
                 argumentArgument = ParseFilename(argumentArgument);
+
+                // Open notepad and scope to the document for batch file
+                notepad_cmd = "notepad.exe " + argumentArgument;
+                system(notepad_cmd.c_str());
             }
             if (argumentArgument != "")
             {
@@ -1631,6 +1642,672 @@ void AddArgumentArgument(string arg, string arg2, string description)
     }
 }
 
+string OutputTemplate(string arg, string arg2, string description)
+{
+    bool boolean = false;
+    string input;
+    string arg3;
+    string out_template;
+    string argument = "%(title)s-%(id)s.%(ext)s";
+
+    while (!boolean)
+    {
+        cout << endl;
+        cout << arg << " " << arg2 << endl;
+        cout << description << endl;
+        cout << "The basic usage is not to set any template arguments when downloading a single file, like in youtube-dl -o funny_video.flv \"https://some/video\". However, it may contain special sequences that will be replaced when downloading each video. The special sequences may be formatted according to python string formatting operations. For example, %(NAME)s or %(NAME)05d. To clarify, that is a percent symbol followed by a name in parentheses, followed by formatting operations. Allowed names along with sequence type are:" << endl;
+        cout << "1. id (string): Video Identifier" << endl;
+        cout << "2. title (string): Video Title" << endl;
+        cout << "3. url (string): Video URL" << endl;
+        cout << "4. ext (string): Video filename extension" << endl;
+        cout << "5. alt_title (string): A secondary title for a video" << endl;
+        cout << "6. display_id (string): An alternative identifier for a video" << endl;
+        cout << "7. uploader (string): Full name of the video uploader" << endl;
+        cout << "8. license (string): License name the video is licensed under" << endl;
+        cout << "9. creator (string): The creator of the video" << endl;
+        cout << "10. release_date (string): The date (YYYYMMDD) when the video was released" << endl;
+        cout << "11. timestamp (numeric): UNIX timestamp of the moment the video became available" << endl;
+        cout << "12. upload_date (string): Video upload date (YYYYMMDD)" << endl;
+        cout << "13. upload_id (string): Nickname or id of the video uploader" << endl;
+        cout << "14. channel (string): Full name of the channel the video is uploaded on" << endl;
+        cout << "15. channel_id (string): Id of the channel" << endl;
+        cout << "16. location (string): Physical location where the video was filmed" << endl;
+        cout << "17. duration (numeric): Length of the video in seconds" << endl;
+        cout << "18. view_count (numeric): How many users have watched the video on the platform" << endl;
+        cout << "19. like_count (numeric): Number of positive ratings of the video" << endl;
+        cout << "20. dislike_count (numeric): Number of negative ratings of the video" << endl;
+        cout << "21. repost_count (numeric): Number of reposts of the video" << endl;
+        cout << "22. average_rating (numeric): Average rating give by users, the scale used depends on the webpage" << endl;
+        cout << "23. comment_count (numeric): Number of comments on the video" << endl;
+        cout << "24. age_limit (numeric): Age restriction for the video (years)" << endl;
+        cout << "25. is_live (boolean): Whether this video is a live stream or a fixed-length video" << endl;
+        cout << "26. start_time (numeric): Time in seconds where the reproduction should start, as specified in the URL" << endl;
+        cout << "27. end_time (numeric): Time in seconds where the reproduction should end, as specified in the URL" << endl;
+        cout << "28. format (string): A human-readable description of the format" << endl;
+        cout << "29. format_id (string): Format code specified by --format" << endl;
+        cout << "30. format_note (string): Additional info about the format" << endl;
+        cout << "31. width (numeric): Width of the video" << endl;
+        cout << "32. height (numeric): Height of the video" << endl;
+        cout << "33. resolution (string): Textual description of width and height" << endl;
+        cout << "34. tbr Average bitrate of audio and video in KBit/s" << endl;
+        cout << "35. abr Average audio bitrate in KBit/s" << endl;
+        cout << "36. acodec (string): Name of the audio codec in use" << endl;
+        cout << "37. asr (numeric): Audio sampling rate in Hertz" << endl;
+        cout << "38. vbr (numeric): Average video bitrate in KBit/s" << endl;
+        cout << "39. fps (numeric): Frame rate" << endl;
+        cout << "40. vcodec (string): Name of the video codec in use" << endl;
+        cout << "41. container (string): Name of the container format" << endl;
+        cout << "42. filesize (numeric): The number of bytes, if known in advance" << endl;
+        cout << "43. filesize_approx (numeric): An estimate for the number of bytes" << endl;
+        cout << "44. protocol (string): The protocol that will be used for the actual download" << endl;
+        cout << "45. extractor (string): Name of the extractor" << endl;
+        cout << "46. extractor_key (string): Key name of the extractor" << endl;
+        cout << "47. epoch (numeric): Unix epoch when creating the file" << endl;
+        cout << "48. autonumber (numeric): Five-digit number that will be increased with each download, starting at zero" << endl;
+        cout << "49. playlist (string): Name or id of the playlist that contains the video" << endl;
+        cout << "50. playlist_index (numeric): Index of the video in the playlist padded with leading zeros according to the total length of the playlist" << endl;
+        cout << "51. playlist_id (string): Playlist identifier" << endl;
+        cout << "52. playlist_title (string): Playlist title" << endl;
+        cout << "53. playlist_uploader (string): Full name of the playlist uploader" << endl;
+        cout << "54. playlist_uploader_id (string): Nickname or id of the playlist uploader" << endl;
+        cout << "Available for the video that belongs to some logical chapter or section:" << endl;
+        cout << "55. chapter (string): Name or title of the chapter the video belongs to" << endl;
+        cout << "56. chapter_number (numeric): Number of the chapter the video belongs to" << endl;
+        cout << "57. chapter_id (string): Id of the chapter the video belongs to" << endl;
+        cout << "Available for the video that is an episode of some series or programme:" << endl;
+        cout << "58. series (string): Title of the series or programme the video episode belongs to" << endl;
+        cout << "59. season (string): Title of the season the video episode belongs to" << endl;
+        cout << "60. season_number (numeric): Number of the season the video episode belongs to" << endl;
+        cout << "61. season_id (string): Id of the season the video episode belongs to" << endl;
+        cout << "62. episode (string): Title of the video episode" << endl;
+        cout << "63. episode_number (numeric): Number of the video episode within a season" << endl;
+        cout << "64. episode_id (string): Id of the video episode" << endl;
+        cout << "Available for the media that is a track or part of a music album:" << endl;
+        cout << "65. track (string): Title of the track" << endl;
+        cout << "66. track_number (numeric): Number of the track within an album or a disc" << endl;
+        cout << "67. track_id (string): Id of the track" << endl;
+        cout << "68. artist (string): Artist(s) of the track" << endl;
+        cout << "69. genre (string): Genre(s) of the track" << endl;
+        cout << "70. album (string): Title of the album the track belongs to" << endl;
+        cout << "71. album_type (string): Type of the album" << endl;
+        cout << "72. album_artist (string): List of all artists appeared on the album" << endl;
+        cout << "73. disc_number (numeric): Number of the disc or other physical medium the track belongs to" << endl;
+        cout << "74. release_year (numeric): Year (YYYY) when the album was released" << endl;
+        cout << "----------------------------------------------------------------------------------------------------" << endl;
+        cout << "75. Insert Hierarchical Path Denotion (/)" << endl;
+        cout << "76. Insert Hyphen (-)" << endl;
+        cout << "77. Insert Period (.)" << endl;
+        cout << "78. Insert Space ( )" << endl;
+        cout << "79. Paste filename" << endl;
+        cout << "80. Paste your template" << endl;
+        cout << "81. Use Default Template" << endl;
+        cout << "0. Back to main menu" << endl;
+        cout << endl;
+        cout << "For a guide on how to format strings for Python, copy and paste the following URL into your web browser:" << endl;
+        cout << "https://docs.python.org/2/library/stdtypes.html#string-formatting" << endl;
+        cout << endl;
+        cout << "Default Template: " << argument << endl;
+        cout << "Current Template: " << out_template << endl;
+        cout << "By default, YouTube-dl writes the file to the current working directory of this application" << endl;
+        cout << "This input is what you would like to add/remove from the output template" << endl;
+        cout << "Make sure you remember the file extension: %(EXT)s" << endl;
+        cout << endl;
+        cout << "Your selection: ";
+        getline(cin, input);
+
+        if (input == "1")
+        {
+            arg3 = "%(ID)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "2")
+        {
+            arg3 = "%(TITLE)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "3")
+        {
+            arg3 = "%(URL)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "4")
+        {
+            arg3 = "%(EXT)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "5")
+        {
+            arg3 = "%(ALT_TITLE)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "6")
+        {
+            arg3 = "%(DISPLAY_ID)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "7")
+        {
+            arg3 = "%(UPLOADER)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "8")
+        {
+            arg3 = "%(LICENSE)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "9")
+        {
+            arg3 = "%(CREATOR)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "10")
+        {
+            arg3 = "%(RELEASE_DATE)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "11")
+        {
+            arg3 = "%(TIMESTAMP)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "12")
+        {
+            arg3 = "%(UPLOAD_DATE)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "13")
+        {
+            arg3 = "%(UPLOAD_ID)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "14")
+        {
+            arg3 = "%(CHANNEL)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "15")
+        {
+            arg3 = "%(CHANNEL_ID)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "16")
+        {
+            arg3 = "%(LOCATION)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "17")
+        {
+            arg3 = "%(DURATION)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "18")
+        {
+            arg3 = "%(VIEW_COUNT)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "19")
+        {
+            arg3 = "%(LIKE_COUNT)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "20")
+        {
+            arg3 = "%(DISLIKE_COUNT)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "21")
+        {
+            arg3 = "%(REPOST_COUNT)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "22")
+        {
+            arg3 = "%(AVERAGE_RATING)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "23")
+        {
+            arg3 = "%(COMMENT_COUNT)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "24")
+        {
+            arg3 = "%(AGE_LIMIT)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "25")
+        {
+            arg3 = "%(IS_ALIVE)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "26")
+        {
+            arg3 = "%(START_TIME)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "27")
+        {
+            arg3 = "%(END_TIME)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "28")
+        {
+            arg3 = "%(FORMAT)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "29")
+        {
+            arg3 = "%(FORMAT_ID)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "30")
+        {
+            arg3 = "%(FORMAT_NOTE)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "31")
+        {
+            arg3 = "%(WIDTH)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "32")
+        {
+            arg3 = "%(HEIGHT)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "33")
+        {
+            arg3 = "%(RESOLUTION)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "34")
+        {
+            arg3 = "%(TBR)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "35")
+        {
+            arg3 = "%(ABR)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "36")
+        {
+            arg3 = "%(ACODEC)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "37")
+        {
+            arg3 = "%(ASR)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "38")
+        {
+            arg3 = "%(VBR)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "39")
+        {
+            arg3 = "%(FPS)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "40")
+        {
+            arg3 = "%(VCODEC)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "41")
+        {
+            arg3 = "%(CONTAINER)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "42")
+        {
+            arg3 = "%(FILESIZE)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "43")
+        {
+            arg3 = "%(FILESIZE_APPROX)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "44")
+        {
+            arg3 = "%(PROTOCOL)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "45")
+        {
+            arg3 = "%(EXTRACTOR)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "46")
+        {
+            arg3 = "%(EXTRACTOR_KEY)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "47")
+        {
+            arg3 = "%(EPOCH)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "48")
+        {
+            arg3 = "%(AUTONUMBER)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "49")
+        {
+            arg3 = "%(PLAYLIST)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "50")
+        {
+            arg3 = "%(PLAYLIST_INDEX)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "51")
+        {
+            arg3 = "%(PLAYLIST_ID)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "52")
+        {
+            arg3 = "%(PLAYLIST_TITLE)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "53")
+        {
+            arg3 = "%(PLAYLIST_UPLOADER)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "54")
+        {
+            arg3 = "%(PLAYLIST_UPLOADER_ID)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "55")
+        {
+            arg3 = "%(CHAPTER)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "56")
+        {
+            arg3 = "%(CHAPTER_NUMBER)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "57")
+        {
+            arg3 = "%(CHAPTER_ID)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "58")
+        {
+            arg3 = "%(SERIES)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "59")
+        {
+            arg3 = "%(SEASON)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "60")
+        {
+            arg3 = "%(SEASON_NUMBER)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "61")
+        {
+            arg3 = "%(SEASON_ID)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "62")
+        {
+            arg3 = "%(EPISODE)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "63")
+        {
+            arg3 = "%(EPISODE_NUMBER)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "64")
+        {
+            arg3 = "%(EPISODE_ID)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "65")
+        {
+            arg3 = "%(TRACK)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "66")
+        {
+            arg3 = "%(TRACK_NUMBER)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "67")
+        {
+            arg3 = "%(TRACK_ID)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "68")
+        {
+            arg3 = "%(ARTIST)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "69")
+        {
+            arg3 = "%(GENRE)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "70")
+        {
+            arg3 = "%(ALBUM)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "71")
+        {
+            arg3 = "%(ALBUM_TYPE)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "72")
+        {
+            arg3 = "%(ALBUM_ARTIST)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "73")
+        {
+            arg3 = "%(DISC_NUMBER)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "74")
+        {
+            arg3 = "%(RELEASE_YEAR)s";
+            out_template = AddTemplateArgs(out_template, arg3);
+        }
+        if (input == "75")
+        {
+            arg3 = "\\";
+            out_template += arg3;
+        }
+        if (input == "76")
+        {
+            arg3 = "-";
+            out_template += arg3;
+        }
+        if (input == "77")
+        {
+            arg3 = ".";
+            out_template += arg3;
+        }
+        if (input == "78")
+        {
+            arg3 = " ";
+            out_template += arg3;
+        }
+        if (input == "79")
+        {
+            bool boolean2 = false;
+            string input2;
+            string filename;
+
+            while (!boolean2)
+            {
+                cout << endl;
+                cout << "Paste Filename: ";
+                getline(cin, input2);
+
+                if (input != "")
+                {
+                    boolean2 = true;
+
+                    // Parse the pasted filename
+                    filename = ParseFilename(input2);
+                    out_template += " ";
+                    out_template += filename;
+                }
+                else
+                {
+                    cout << "You need to paste a filename!" << endl;
+                }
+            }
+        }
+        if (input == "80")
+        {
+            bool boolean2 = false;
+            string input2;
+
+            while (!boolean2)
+            {
+                cout << endl;
+                cout << "Default Template: %(title)s-%(id)s.%(ext)s" << endl;
+                cout << "Paste your template: ";
+                getline(cin, input2);
+
+                if (input != "")
+                {
+                    boolean = true;
+                    boolean2 = true;
+                    ParseTemplate(input2);
+                }
+                else
+                {
+                    cout << "You need to paste the template!" << endl;
+                }
+            }
+        }
+        if (input == "81")
+        {
+            out_template = "%(title)s-%(id)s.%(ext)s";
+            boolean = true;
+            return out_template;
+        }
+        if (input == "0")
+        {
+            boolean = true;
+            out_template = ParseTemplate(out_template);
+            return out_template;
+        }
+    }
+    return out_template;
+}
+
+string AddTemplateArgs(string argument, string arg3)
+{
+    // This function checks if there is a string in the template that matches the current string being added to the template
+    // Check if the string is found in the argument
+    bool boolean = false;
+    bool boolean2 = false;
+    string input;
+    string input2;
+    string temp = "";
+
+    if (argument.find(arg3) != string::npos)
+    {
+        while (!boolean)
+        {
+            // The string has been found, ask the user if they would like to remove it
+            cout << endl;
+            cout << "The string has been found in the template, would you like to remove it?" << endl;
+            cout << "Your response (y/n): ";
+            getline(cin, input);
+
+            if (input == "Y" || input == "y")
+            {
+                // Remove the string from the argument
+                size_t number = argument.find(arg3);
+
+                for (int x = 0; x < argument.length(); x++)
+                {
+                    if (x <= number && x >= number + arg3.length())
+                    {
+                        temp += argument[x];
+                    }
+                }
+
+                return temp;
+            }
+            else if (input == "N" || input == "n")
+            {
+                while (!boolean2)
+                {
+                    cout << endl;
+                    cout << "You have opted to keep the string, would you like to continue placing the duplicate string?" << endl;
+                    cout << "Your response (y/n): ";
+                    getline(cin, input2);
+
+                    if (input2 == "Y" || input2 == "y")
+                    {
+                        argument += arg3;
+                        boolean = true;
+                        boolean2 = true;
+                        return argument;
+                    }
+                    else if (input2 == "N" || input2 == "n")
+                    {
+                        return argument;
+                    }
+                    else
+                    {
+                        cout << "You have entered an invalid option! Select from y or n." << endl;
+                    }
+                }
+            }
+            else
+            {
+                cout << "You have entered an invalid option! Select from y or n." << endl;
+            }
+        }
+    }
+    else
+    {
+        // The string has not been found in the template
+        argument += arg3;
+        return argument;
+    }
+    return argument;
+}
+
+string ParseTemplate(string out_template)
+{
+    string temp = "";
+
+    for (int i = 0; i < out_template.length(); i++)
+    {
+        if (out_template[i] == '%' && out_template[i - 1] != '%' && out_template[i + 1] != '%')
+        {
+            temp += out_template[i];
+            temp += '%';
+        }
+        else
+        {
+            temp += out_template[i];
+        }
+    }
+
+    return temp;
+}
+
 string ParseFilename(string filename)
 {
     string temp_file;
@@ -1644,6 +2321,10 @@ string ParseFilename(string filename)
             temp_file += "\\\"";
         }
         else if (filename[i] == '\\')
+        {
+            temp_file += "\\\\";
+        }
+        else if (filename[i] == '/')
         {
             temp_file += "\\\\";
         }
